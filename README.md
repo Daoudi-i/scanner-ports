@@ -1,28 +1,29 @@
-:) Scanner de Ports TCP (Version Basique) :)
+# Scanner de Ports TCP en Python
 
-Un script Python simple pour vérifier l'état de ports spécifiques sur une machine locale. Ce projet est construit de manière itérative pour comprendre le fonctionnement des sockets réseau et du protocole TCP.
+Un outil en ligne de commande (CLI) développé en Python pour vérifier l'état des ports réseau d'une machine cible. 
+Ce projet a été construit de manière itérative afin de comprendre en profondeur le fonctionnement des sockets réseau, du protocole TCP et de l'optimisation des performances en Python.
 
-______Fonctionnalités actuelles______
+##  Évolution et Fonctionnalités
 
-Dans cette version initiale, le script utilise le module `socket` pour tenter d'établir une connexion TCP (`connect_ex`) sur la machine locale (`127.0.0.1`). 
+Ce projet a été développé en 3 phases distinctes :
 
-Il cible spécifiquement une liste de ports critiques ou couramment utilisés :
-- 21 (FTP)
-- 22 (SSH)
-- 80 / 8080 (HTTP)
-- 443 (HTTPS)
-- 135 / 445** (Services Windows)
-- 3306 (MySQL)
+* **Phase 1 : Sockets Basiques** * Création du noyau de connexion TCP utilisant le module `socket`.
+  * Utilisation de `connect_ex` pour éviter les plantages lors de la détection de ports fermés.
+  * Ciblage spécifique de ports critiques (FTP, SSH, HTTP/S, MySQL, services Windows).
 
-Si aucun de ces ports n'est ouvert, le script affiche un message personnalisé pour le signaler.
+* **Phase 2 : Interface CLI et Robustesse**
+  * Implémentation du module `argparse` pour rendre l'adresse IP et les ports dynamiques.
+  * Ajout de la gestion d'exceptions (`try...except`) pour prévenir les erreurs de saisie utilisateur et éviter les crashs inattendus.
+  * Menu d'aide auto-généré (`-h`).
 
-________Comment le lancer___________
+* **Phase 3 : Accélération par Multithreading**
+  * Remplacement du scan séquentiel (très lent) par un scan asynchrone.
+  * Utilisation de `concurrent.futures.ThreadPoolExecutor` pour déployer jusqu'à 50 *workers* simultanés, réduisant drastiquement le temps d'exécution.
 
-Assurez-vous d'avoir Python installé, puis lancez simplement la commande dans votre terminal :
+##  Comment l'utiliser
+
+Assurez-vous d'avoir Python installé sur votre machine. Aucune bibliothèque externe n'est requise.
+
+**1. Afficher le menu d'aide :**
 ```bash
-python check_ports.py
-
-__________Prochaine Étape : Rendre l'outil dynamique (CLI)_______________
-
-Actuellement, l'adresse IP (127.0.0.1) et la liste des ports sont "codées en dur" directement dans le fichier Python.
-L'objectif de la prochaine phase est d'intégrer des arguments en ligne de commande. Cela permettra de cibler n'importe quelle adresse IP sans avoir à modifier le code source, par exemple : python scanner.py -t 192.168.1.1.
+python port_scanner.py -h
